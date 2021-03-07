@@ -10,5 +10,3 @@ require (
 	github.com/russross/blackfriday/v2 v2.1.0 // indirect
 	github.com/urfave/cli/v2 v2.3.0
 )
-
-//replace github.com/letscloud-community/letscloud-go => ../letscloud-go
