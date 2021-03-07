@@ -4,9 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"os"
+	"strconv"
 	"strings"
 
 	"github.com/jedib0t/go-pretty/v6/list"
+	"github.com/letscloud-community/letscloud-cli/internal/helpers"
 	"github.com/letscloud-community/letscloud-cli/internal/pkg/writer"
 	"github.com/letscloud-community/letscloud-go/domains"
 	"github.com/urfave/cli/v2"
@@ -30,22 +32,9 @@ func (c Commands) instanceCmd() *cli.Command {
 					}
 
 					wr := writer.New(os.Stdout)
-					wr.WriteHeader("IDENTIFIER", "LABEL", "IPv4", "OS", "STATUS")
+					wr.WriteHeader("IDENTIFIER", "LABEL", "IPv4", "DC", "OS", "STATUS")
 					for _, v := range srvs {
-						status := "off"
-						if v.Booted {
-							status = "running"
-						}
-						if v.Locked {
-							status = "action in progess"
-						}
-						if !v.Built {
-							status = "building"
-						}
-						if v.Suspended {
-							status = "suspended"
-						}
-						wr.WriteData(v.Identifier, v.Label, v.IPAddresses[0].Address, v.TemplateLabel, status)
+						wr.WriteData(v.Identifier, v.Label, v.IPAddresses[0].Address, v.Location.Slug, v.TemplateLabel, helpers.GetInstanceStatus(v.Booted, v.Locked, v.Built, v.Suspended))
 					}
 
 					return wr.Flush()
@@ -57,40 +46,75 @@ func (c Commands) instanceCmd() *cli.Command {
 					// Data Validation
 					identifier := ctx.Args().First()
 					if identifier == "" {
-						return errors.New("Identifier can not be empty. Please use `instance destroy <identifier>`")
+						return errors.New("Identifier can not be empty. Please use `instance details <identifier>`")
 					}
+					srv, err := c.sdk.Instance(identifier)
+					if err != nil {
+						return err
+					}
+
+					//fmt.Println(srv.location)
 
 					l := list.NewWriter()
 					lTemp := list.List{}
 					lTemp.Render()
 
-					l.AppendItem("OS")
+					l.AppendItem(srv.Label)
 					l.Indent()
-					l.AppendItems([]interface{}{"Cent OS 6.4"})
+					l.AppendItem("CPU " + strconv.Itoa(srv.CPUS))
+					l.AppendItem("RAM " + strconv.Itoa(srv.Memory) + " MB")
+					l.AppendItem("SSD " + strconv.Itoa(srv.TotalDiskSize) + " GB")
 					l.UnIndent()
-					l.AppendItems([]interface{}{"Status"})
+
+					l.AppendItem("Location")
 					l.Indent()
-					l.AppendItems([]interface{}{"running"})
+					l.AppendItem(srv.Location.Slug)
+					l.AppendItem(srv.Location.Country)
+					l.AppendItem(srv.Location.City)
 					l.UnIndent()
+
+					l.AppendItem("Hostname")
+					l.Indent()
+					l.AppendItem(srv.Hostname)
+					l.UnIndent()
+
 					l.AppendItem("IPv4")
 					l.Indent()
-					l.AppendItem("192.168.121.121")
-					l.AppendItem("192.168.121.121")
-					l.AppendItem("192.168.121.121")
-					l.AppendItem("192.168.121.121")
+					for _, IPAddress := range srv.IPAddresses {
+						if helpers.IsIpv4Regex(IPAddress.Address) {
+							l.AppendItem(IPAddress.Address)
+						}
+					}
 					l.UnIndent()
+
 					l.AppendItem("IPv6")
 					l.Indent()
-					l.AppendItem("sdfsdfsdfsdfsdccds")
-					l.AppendItem("sdfsdfsdfsdfsdccds")
-					l.AppendItem("sdfsdfsdfsdfsdccds")
-					l.AppendItem("sdfsdfsdfsdfsdccds")
+					for _, IPAddress := range srv.IPAddresses {
+						if !helpers.IsIpv4Regex(IPAddress.Address) {
+							l.AppendItem(IPAddress.Address)
+						}
+					}
+					l.UnIndent()
+
+					l.AppendItem("Distro")
+					l.Indent()
+					l.AppendItem(srv.TemplateLabel)
+					l.UnIndent()
+
+					l.AppendItem("Root Password")
+					l.Indent()
+					l.AppendItem(srv.RootPassword)
+					l.UnIndent()
+
+					l.AppendItem("Status")
+					l.Indent()
+					l.AppendItem(helpers.GetInstanceStatus(srv.Booted, srv.Locked, srv.Built, srv.Suspended))
+					l.UnIndent()
 
 					l.SetStyle(list.StyleConnectedRounded)
 
 					prefix := ""
 					title := "Instance " + identifier
-
 					fmt.Printf("%s\n", title)
 					fmt.Println(strings.Repeat("-", len(title)+1))
 					for _, line := range strings.Split(l.Render(), "\n") {
@@ -98,26 +122,6 @@ func (c Commands) instanceCmd() *cli.Command {
 					}
 					fmt.Println()
 
-					// // init new tab writer
-					// wr := writer.New(os.Stdout)
-					// // write headers
-					// wr.WriteHeader("IDENTIFIER", "LABEL", "IPv4", "OS", "STATUS")
-					// // write data value
-					// for _, v := range srvs {
-					// 	status := "off"
-					// 	if v.Booted {
-					// 		status = "running"
-					// 	}
-					// 	if v.Locked {
-					// 		status = "action in progess"
-					// 	}
-					// 	if !v.Built {
-					// 		status = "building"
-					// 	}
-					// 	wr.WriteData(v.Identifier, v.Label, v.IPAddresses[0].Address, v.TemplateLabel, status)
-					// }
-
-					// return wr.Flush()
 					return nil
 				},
 			},
