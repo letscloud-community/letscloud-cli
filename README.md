@@ -4,11 +4,11 @@
 
 ```
 $ letscloud instance list
-IDENTIFIER      LABEL           IPv4            OS                      STATUS
-rstpgafocoznzx  my-new-label-1    38.143.68.93    CentOS 6.8 x86          running
-xzosdqyydeyutr  my-new-label-2    38.143.68.43    Ubuntu 20.04 x64        running
-cqwdciprplqmkk  my-new-label-3    38.143.68.53    CentOS 6.8 x86          running
-xiflugipmecvfo  my-new-label-4    38.143.68.29    Ubuntu 20.04 x64        running
+IDENTIFIER      LABEL             IPv4            DC     OS                      STATUS
+rstpgafocoznzx  my-new-label-1    38.143.68.93    MIA1   CentOS 6.8 x86          running
+xzosdqyydeyutr  my-new-label-2    38.143.68.43    LON1   Ubuntu 20.04 x64        running
+cqwdciprplqmkk  my-new-label-3    38.143.68.53    MIA2   CentOS 6.8 x86          running
+xiflugipmecvfo  my-new-label-4    38.143.68.29    SFO1   Ubuntu 20.04 x64        running
 ```
 
 ## Installation
@@ -45,15 +45,21 @@ If you have **Go and Makefile** installed, you can build and install the `letscl
     
 ## Examples
 
+### Create new instance
+
+```
+$ letscloud instance create --location MIA2 --plan 1vcpu-1gb-10ssd --image centos-69-x64 --hostname test-api.com --label test-api 
+```
+
 ### List all instances
 
 ```
 $ letscloud instance list
-IDENTIFIER      LABEL           IPv4            OS                      STATUS
-rstpgafocoznzx  my-new-label-1    38.143.68.93    CentOS 6.8 x86          running
-xzosdqyydeyutr  my-new-label-2    38.143.68.43    Ubuntu 20.04 x64        running
-cqwdciprplqmkk  my-new-label-3    38.143.68.53    CentOS 6.8 x86          running
-xiflugipmecvfo  my-new-label-4    38.143.68.29    Ubuntu 20.04 x64        running
+IDENTIFIER      LABEL             IPv4            DC     OS                      STATUS
+rstpgafocoznzx  my-new-label-1    38.143.68.93    MIA1   CentOS 6.8 x86          running
+xzosdqyydeyutr  my-new-label-2    38.143.68.43    LON1   Ubuntu 20.04 x64        running
+cqwdciprplqmkk  my-new-label-3    38.143.68.53    MIA2   CentOS 6.8 x86          running
+xiflugipmecvfo  my-new-label-4    38.143.68.29    SFO1   Ubuntu 20.04 x64        running
 ```
 
 ### Create a New SSH Key
