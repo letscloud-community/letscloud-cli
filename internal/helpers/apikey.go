@@ -12,29 +12,25 @@ var (
 	noApiKeyErr = errors.New(`Use export "LETSCLOUD_API_KEY=your_api_key" or use "letscloud api-key set your_api_key"`)
 )
 
-// return the saved API Key
+// GetAPIKey returns the saved API Key
 func GetAPIKey() (string, error) {
-	// check if API KEY exists in the env
-	if apiKey := os.Getenv("LETSCLOUD_API_KEY"); apiKey != "" {
-		// if yes, take it and save it to file
-		if err := SaveAPIKey(apiKey); err != nil {
-			return "", err
-		}
-
-		// then return it
+	// Check if API KEY exists in the saved file first
+	apiKey, err := readAPIKeyFromFile()
+	if err == nil && apiKey != "" {
 		return apiKey, nil
 	}
 
-	apiKey, err := readAPIKeyFromFile()
-	if err != nil {
-		return "", noApiKeyErr
+	// If not found in the file, check the environment variable
+	if apiKey := os.Getenv("LETSCLOUD_API_KEY"); apiKey != "" {
+		// Save the API key from environment to the file for consistency
+		if err := SaveAPIKey(apiKey); err != nil {
+			return "", err
+		}
+		return apiKey, nil
 	}
 
-	if apiKey == "" {
-		return "", noApiKeyErr
-	}
-
-	return apiKey, nil
+	// If no API Key is found anywhere, return an error
+	return "", noApiKeyErr
 }
 
 func readAPIKeyFromFile() (string, error) {
