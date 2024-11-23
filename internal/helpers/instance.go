@@ -20,7 +20,7 @@ func GetInstanceStatus(Booted bool, Locked bool, Built bool, Suspended bool) str
 		status = "running"
 	}
 	if Locked {
-		status = "action in progess"
+		status = "action in progress"
 	}
 	if !Built {
 		status = "building"
