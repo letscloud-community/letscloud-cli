@@ -31,10 +31,31 @@ func (c Commands) instanceCmd() *cli.Command {
 						return err
 					}
 
+					// Check if there are no instances
+					if len(srvs) == 0 {
+						fmt.Println("No instances found.")
+						return nil
+					}
+					
 					wr := writer.New(os.Stdout)
 					wr.WriteHeader("IDENTIFIER", "LABEL", "IPv4", "DC", "OS", "STATUS")
 					for _, v := range srvs {
-						wr.WriteData(v.Identifier, v.Label, v.IPAddresses[0].Address, v.Location.Slug, v.TemplateLabel, helpers.GetInstanceStatus(v.Booted, v.Locked, v.Built, v.Suspended))
+						ip := "N/A"
+						if len(v.IPAddresses) > 0 {
+							ip = v.IPAddresses[0].Address
+						}
+						identifier := v.Identifier
+						if identifier == "" {
+							identifier = "N/A"
+						}
+						wr.WriteData(
+							identifier,
+							v.Label,
+							ip,
+							v.Location.Slug,
+							v.TemplateLabel,
+							helpers.GetInstanceStatus(v.Booted, v.Locked, v.Built, v.Suspended),
+						)
 					}
 
 					return wr.Flush()
@@ -53,7 +74,11 @@ func (c Commands) instanceCmd() *cli.Command {
 						return err
 					}
 
-					//fmt.Println(srv.location)
+					// Check if there are no instances
+					if srv == nil || srv.Identifier == "" {
+						fmt.Printf("Instance %s not found. Please check the instance identifier\n", identifier)
+						return nil
+					}
 
 					l := list.NewWriter()
 					lTemp := list.List{}
@@ -146,6 +171,9 @@ func (c Commands) instanceCmd() *cli.Command {
 					&cli.StringFlag{
 						Name: "ssh",
 					},
+					&cli.StringFlag{
+						Name: "password",
+					},					
 				},
 				Action: func(ctx *cli.Context) error {
 					// Data Validation
@@ -175,6 +203,16 @@ func (c Commands) instanceCmd() *cli.Command {
 					}
 
 					sshSlug := ctx.String("ssh")
+					password := ctx.String("password")
+					
+					if sshSlug == "" && password == "" {
+						return errors.New("You must provide either --ssh or --password")
+					}
+
+					if sshSlug != "" && password == "" {
+						password = helpers.GenerateRandomPassword()
+						fmt.Printf("No password provided, generated password: %s\n", password)
+					}
 
 					req := domains.CreateInstanceRequest{
 						LocationSlug: locSlug,
@@ -183,6 +221,7 @@ func (c Commands) instanceCmd() *cli.Command {
 						Label:        label,
 						ImageSlug:    imgSlug,
 						SSHSlug:      sshSlug,
+						Password:     password,
 					}
 
 					if sshSlug != "" {
@@ -195,7 +234,7 @@ func (c Commands) instanceCmd() *cli.Command {
 						return err
 					}
 
-					fmt.Println("Instance successfully created!")
+					fmt.Println("The instance creation request has been successfully submitted.")
 
 					return nil
 				},
@@ -215,7 +254,7 @@ func (c Commands) instanceCmd() *cli.Command {
 						return err
 					}
 
-					fmt.Printf("Instance %s successfully destroyed!\n", identifier)
+					fmt.Printf("The request to destroy instance %s has been successfully submitted.\n", identifier)
 
 					return nil
 				},
@@ -235,7 +274,7 @@ func (c Commands) instanceCmd() *cli.Command {
 						return err
 					}
 
-					fmt.Printf("Instance %s startup has been queued.\n", identifier)
+					fmt.Printf("The startup request for instance %s has been queued and will be executed shortly.\n", identifier)
 
 					return nil
 				},
@@ -254,7 +293,8 @@ func (c Commands) instanceCmd() *cli.Command {
 					if err != nil {
 						return err
 					}
-					fmt.Printf("Instance %s will be shut down shortly.\n", identifier)
+
+					fmt.Printf("The shutdown request for instance %s has been successfully submitted and will be processed soon.\n", identifier)
 
 					return nil
 				},
@@ -274,7 +314,7 @@ func (c Commands) instanceCmd() *cli.Command {
 						return err
 					}
 
-					fmt.Printf("Instance %s successfully Rebooted!\n", identifier)
+					fmt.Printf("The reboot request for instance %s has been successfully submitted.\n", identifier)
 
 					return nil
 				},
@@ -296,7 +336,7 @@ func (c Commands) instanceCmd() *cli.Command {
 						return err
 					}
 
-					fmt.Printf("Instance %s Password Successfully Reset!\n", identifier)
+					fmt.Printf("The password reset request for instance %s has been successfully submitted.\n", identifier)
 
 					return nil
 				},
