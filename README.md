@@ -33,13 +33,15 @@ If you have **Go and Makefile** installed, you can build and install the `letscl
 4. Run the following command to set your API Key for the first time.
 
    `letscloud api-key set 'your_api_key'`
+   **remember to use single quotes in your api key**  
+   
    Alternatively, you can export the API Key as an environment variable in linux OS.
    
    `export LETSCLOUD_API_KEY='your_api_key'`
     
 5. That's it. Now you can use the program.
 
-   For example, you can run the `profile` command to see your profile info
+   For example, you can run the `profile` command to see your profile info and your balance.
    
    `letscloud profile`
     
@@ -48,7 +50,7 @@ If you have **Go and Makefile** installed, you can build and install the `letscl
 ### Create new instance
 
 ```
-$ letscloud instance create --location MIA2 --plan 1vcpu-1gb-10ssd --image centos-69-x64 --hostname test-api.com --label test-api 
+$ letscloud instance create --location MIA1 --plan 1vcpu-1gb-10ssd --image ubuntu-24.04-x86_64 --hostname test-api.com --label test-api --password $123@456%789
 ```
 
 ### List all instances
