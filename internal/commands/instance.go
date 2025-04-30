@@ -46,7 +46,7 @@ func (c Commands) instanceCmd() *cli.Command {
 					// Data Validation
 					identifier := ctx.Args().First()
 					if identifier == "" {
-						return errors.New("Identifier can not be empty. Please use `instance details <identifier>`")
+						return errors.New("identifier can not be empty. Please use `instance details <identifier>`")
 					}
 					srv, err := c.sdk.Instance(identifier)
 					if err != nil {
@@ -151,27 +151,27 @@ func (c Commands) instanceCmd() *cli.Command {
 					// Data Validation
 					locSlug := ctx.String("location")
 					if locSlug == "" {
-						return errors.New("Location slug can not be empty. Please use --location")
+						return errors.New("location slug can not be empty. Please use --location")
 					}
 
 					planSlug := ctx.String("plan")
 					if planSlug == "" {
-						return errors.New("Plan slug can not be empty. Please use --plan")
+						return errors.New("plan slug can not be empty. Please use --plan")
 					}
 
 					hostName := ctx.String("hostname")
 					if hostName == "" {
-						return errors.New("Hostname can not be empty. Please use --hostname")
+						return errors.New("hostname can not be empty. Please use --hostname")
 					}
 
 					label := ctx.String("label")
 					if label == "" {
-						return errors.New("Label can not be empty. Please use --label")
+						return errors.New("label can not be empty. Please use --label")
 					}
 
 					imgSlug := ctx.String("image")
 					if imgSlug == "" {
-						return errors.New("Image slug can not be empty. Please use --image")
+						return errors.New("image slug can not be empty. Please use --image")
 					}
 
 					sshSlug := ctx.String("ssh")
@@ -206,7 +206,7 @@ func (c Commands) instanceCmd() *cli.Command {
 					// Data Validation
 					identifier := ctx.Args().First()
 					if identifier == "" {
-						return errors.New("Identifier can not be empty. Please use `instance destroy <identifier>`")
+						return errors.New("identifier can not be empty. Please use `instance destroy <identifier>`")
 					}
 
 					// Destroy Instance
@@ -226,7 +226,7 @@ func (c Commands) instanceCmd() *cli.Command {
 					// Data Validation
 					identifier := ctx.Args().First()
 					if identifier == "" {
-						return errors.New("Identifier can not be empty. Please use `instance start <identifier>`")
+						return errors.New("identifier can not be empty. Please use `instance start <identifier>`")
 					}
 
 					// Start Instance
@@ -246,7 +246,7 @@ func (c Commands) instanceCmd() *cli.Command {
 					// Data Validation
 					identifier := ctx.Args().First()
 					if identifier == "" {
-						return errors.New("Identifier can not be empty. Please use `instance shutdown <identifier>`")
+						return errors.New("identifier can not be empty. Please use `instance shutdown <identifier>`")
 					}
 
 					// Shutdown Instance
@@ -265,7 +265,7 @@ func (c Commands) instanceCmd() *cli.Command {
 					// Data Validation
 					identifier := ctx.Args().First()
 					if identifier == "" {
-						return errors.New("Identifier can not be empty. Please use `instance reboot <identifier>`")
+						return errors.New("identifier can not be empty. Please use `instance reboot <identifier>`")
 					}
 
 					// Reboot Instance
@@ -285,7 +285,7 @@ func (c Commands) instanceCmd() *cli.Command {
 					// Data Validation
 					identifier := ctx.Args().First()
 					if identifier == "" {
-						return errors.New("Identifier can not be empty. Please use `instance reset-password <identifier>`")
+						return errors.New("identifier can not be empty. Please use `instance reset-password <identifier>`")
 					}
 
 					// Reset Root Password Instance

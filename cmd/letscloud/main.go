@@ -8,7 +8,7 @@ import (
 )
 
 const (
-	VERSION = "v1.0.0"
+	VERSION = "v1.2.0"
 )
 
 func main() {
@@ -25,9 +25,6 @@ func main() {
 	app.Usage = "This cli helps you to manage your LetsCloud infrastructure from your terminal"
 	app.Commands = cmdDict.Commands()
 	app.Before = func(ctx *cli.Context) error {
-		// Check if they are trying api-key command
-		// if yes, allow them regardless of api-key is set
-		return allow()
 		if ctx.Args().Len() > 1 {
 			if ctx.Args().First() == "api-key" && ctx.Args().Get(1) == "set" {
 				// allow
@@ -35,13 +32,10 @@ func main() {
 			}
 		}
 
-		// if api-key is there, allow them
 		if cmdDict.Sdk().APIKey() != "" {
-			// allow
 			return allow()
 		}
 
-		// now allow
 		return notAllow()
 	}
 

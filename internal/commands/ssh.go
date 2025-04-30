@@ -48,7 +48,7 @@ func (c Commands) sshKeyCmd() *cli.Command {
 					title := ctx.String("title")
 					// Validate SSH Key title
 					if title == "" {
-						return errors.New("Please Provide a title for your SSH Key `ssh-key create --title>`")
+						return errors.New("please Provide a title for your SSH Key `ssh-key create --title>`")
 					}
 
 					key := ctx.String("key")
@@ -75,7 +75,7 @@ func (c Commands) sshKeyCmd() *cli.Command {
 					slug := ctx.Args().First()
 					// Validate SSH Key title
 					if slug == "" {
-						return errors.New("Please Provide a slug of your SSH Key `ssh-key delete <slug>`")
+						return errors.New("please Provide a slug of your SSH Key `ssh-key delete <slug>`")
 					}
 					// Delete existing SSH Key
 					err := c.sdk.DeleteSSHKey(slug)

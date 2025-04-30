@@ -93,9 +93,10 @@ VERSION:
 COMMANDS:
    api-key    Show or Set your API Key
    locations  Show All Locations
-   plans      Show Plans by Location
+   plans      Show All Plans by Location
    images     Show All the Images by Location
    ssh-key    Manage your SSH Keys
+   snapshot   Manage your snapshots
    instance   Manage your instances
    profile    Show your Profile Info
    help, h    Shows a list of commands or help for one command
