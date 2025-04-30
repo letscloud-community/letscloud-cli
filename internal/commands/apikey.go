@@ -22,7 +22,7 @@ func (c *Commands) apiKeyCmd() *cli.Command {
 					akValue := ctx.Args().First()
 					// Validate API Key value
 					if akValue == "" {
-						return errors.New("Please provide a API Key value `letscloud api-key set <value>`")
+						return errors.New("please provide a API Key value `letscloud api-key set <value>`")
 					}
 
 					// Save API Key from args passed to the CLI

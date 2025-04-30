@@ -15,13 +15,13 @@ import (
 func (c Commands) plansCmd() *cli.Command {
 	return &cli.Command{
 		Name:  "plans",
-		Usage: "Show Plans by Location",
+		Usage: "Show All Plans by Location",
 		Action: func(ctx *cli.Context) error {
 			// checking if location slug is valid
 			slug := ctx.Args().First()
 
 			if slug == "" {
-				return errors.New("Please provide a slug for the location `plans <location_slug>`")
+				return errors.New("please provide a slug for the location `plans <location_slug>`")
 			}
 
 			// get all the location plans

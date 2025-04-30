@@ -13,13 +13,13 @@ import (
 func (c Commands) imagesCmd() *cli.Command {
 	return &cli.Command{
 		Name:  "images",
-		Usage: "Show All the Images by Location",
+		Usage: "Show All Images by Location",
 		Action: func(ctx *cli.Context) error {
 			// validating data
 			slug := ctx.Args().First()
 
 			if slug == "" {
-				return errors.New("Please provide a slug for the image `images <location_slug>`")
+				return errors.New("please provide a slug for the image `images <location_slug>`")
 			}
 			// get all the locations
 			locs, err := c.sdk.LocationImages(slug)
