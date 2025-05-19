@@ -1,0 +1,44 @@
+project_name: letscloud
+version: 2
+
+builds:
+  - main: ./cmd/letscloud
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - windows
+      - darwin
+    ldflags:
+      - -s -w
+    binary: "letscloud"
+    ignore:
+    - goos: darwin
+      goarch: 386    
+
+archives:
+  - name_template: "{{ .ProjectName }}-{{ .Version }}-{{ .Os }}-{{ .Arch }}"
+    files:
+      - none*  
+    wrap_in_directory: false
+
+source:
+  name_template: "{{ .ProjectName }}-{{ .Version }}.source"
+
+checksum:
+  name_template: "{{ .ProjectName }}-{{ .Version }}-checksums.sha256"
+  algorithm: sha256
+
+dockers:
+- dockerfile: Dockerfile.goreleaser
+  image_templates:
+  - "letscloudcommunity/letscloud-cli:latest"
+  - "letscloudcommunity/letscloud-cli:{{ .Version }}"
+
+release:
+  github:
+    owner: letscloud-community
+    name: letscloud-cli
+
+changelog:
+  disable: false

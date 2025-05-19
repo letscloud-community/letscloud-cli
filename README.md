@@ -1,27 +1,127 @@
-# letscloud: Command-line interface for LetsCloud
+# letscloud-cli
 
-`letscloud` is a command-line interface for interacting with LetsCloud Infrastructure.
+The LetsCloud Command Line is an interface for interacting with LetsCloud Infrastructure.
 
 ```
-$ letscloud instance list
-IDENTIFIER      LABEL             IPv4            DC     OS                      STATUS
-rstpgafocoznzx  my-new-label-1    38.143.68.93    MIA1   CentOS 6.8 x86          running
-xzosdqyydeyutr  my-new-label-2    38.143.68.43    LON1   Ubuntu 20.04 x64        running
-cqwdciprplqmkk  my-new-label-3    38.143.68.53    MIA2   CentOS 6.8 x86          running
-xiflugipmecvfo  my-new-label-4    38.143.68.29    SFO1   Ubuntu 20.04 x64        running
+NAME:
+   letscloud - manage your LetsCloud resources from your terminal
+
+USAGE:
+   letscloud [command]
+
+VERSION:
+   v1.2.0
+
+COMMANDS:
+   api-key    Show or Set your API Key
+   locations  Show All Locations
+   plans      Show All Plans by Location
+   images     Show All Images by Location
+   ssh-key    Manage your SSH Keys
+   snapshot   Manage your snapshots
+   instance   Manage your instances
+   profile    Show your Profile Info
+   help, h    Shows a list of commands or help for one command
+
+GLOBAL OPTIONS:
+   --help, -h     show help
+   --version, -v  print the version
+
+Use "letscloud [command] --help" for more information about a command.
 ```
 
-## Installation
+- [Installing `letscloud`](#installing-letscloud)
+   - [Downloading a Release from GitHub](#downloading-a-release-from-github)
+   - [Building the Development Version from Source](#building-the-development-version-from-source)
+   - [Using Docker](#using-docker)
+- [Getting Started](#getting-started)
+- [Examples](#examples)
+   - [Create a New SSH Key](#create-a-new-ssh-key)
+   - [List all instances](#list-all-instances)
+   - [Create new instance](#create-new-instance)
+   - [List all available locations](#list-all-available-locations)
+   - [List all available images by location](#list-all-available-images-by-location)
+   - [List all available plans by location](#list-all-available-plans-by-location)
+
+## Installing `letscloud`
 
 You can download pre-built binaries for Linux, macOS, and Windows on
 the [releases page](https://github.com/letscloud-community/letscloud-cli/releases).
 
-### Build Manually
+### Downloading a Release from GitHub
 
-If you have **Go and Makefile** installed, you can build and install the `letscloud` program with:
+Find the appropriate archive for your operating system and architecture and download the archive from your browser or copy its URL and retrieve it to your home directory with `wget` or `curl`.
 
-    make build
-    
+In this example we used the `version` `1.2.0`, but you have to change for the latest version or what version you want.
+
+Example using `wget`:
+
+```
+cd ~
+wget https://github.com/letscloud-community/letscloud-cli/releases/download/v1.2.0/letscloud-1.2.0-linux-amd64.tar.gz
+```
+
+Or using `curl`
+
+```
+cd ~
+curl -OL https://github.com/letscloud-community/letscloud-cli/releases/download/v1.2.0/letscloud-1.2.0-linux-amd64.tar.gz
+```
+
+Extract the binary:
+
+```
+tar xf ~/letscloud-1.2.0-linux-amd64.tar.gz
+```
+
+Move the letscloud binary to somewhere in your path. For example, on GNU/Linux and OS X systems:
+
+```
+sudo mv ~/letscloud /usr/local/bin
+```
+
+### Building the Development Version from Source
+
+If you have a Go environment configured, you can install the development version from the command line.
+
+```
+go install github.com/letscloud-community/letscloud-cli/cmd/letscloud@latest
+```
+
+Another way to build from source is clone the repository:
+
+```
+git clone https://github.com/letscloud-community/letscloud-cli.git
+cd letscloud-cli
+make build
+```
+
+### Using Docker
+
+You can also find the image on [Docker Hub](https://hub.docker.com/r/letscloudcommunity/letscloud-cli)
+
+Get the letscloud-cli for Docker
+```
+docker pull letscloudcommunity/letscloud-cli:latest
+```
+#### Using letscloud-cli with Docker
+When using letscloud-cli with Docker, you must pass the environment variable with your API KEY.
+
+> Note: Replace `<YOUR-API-KEY>` with your actual LetsCloud API key.
+
+Example: Running a basic command to return your profile:
+```
+docker run --rm -it \
+  --env=LETSCLOUD_API_KEY='<YOUR-API-KEY>' \
+  letscloudcommunity/letscloud-cli profile
+```
+Example: Running a command to list your instances:
+```
+docker run --rm -it \
+  --env=LETSCLOUD_API_KEY='<YOUR-API-KEY>' \
+  letscloudcommunity/letscloud-cli instance list
+```
+
 ## Getting Started
 
 1. Visit the LetsCloud Account at [my.letscloud.io](https://my.letscloud.io),
@@ -47,89 +147,55 @@ If you have **Go and Makefile** installed, you can build and install the `letscl
     
 ## Examples
 
-### Create new instance
-
+### Create a New SSH Key
+If you do not provide a `public key`, we will generate a new key and the `private key` will be shown.  
+**Save this key as it is not stored**
 ```
-$ letscloud instance create --location MIA1 --plan 1vcpu-1gb-10ssd --image ubuntu-24.04-x86_64 --hostname test-api.com --label test-api --password $123@456%789
+letscloud ssh-key create --title=my-ssh-key
 ```
 
 ### List all instances
-
 ```
-$ letscloud instance list
-IDENTIFIER      LABEL             IPv4            DC     OS                      STATUS
-rstpgafocoznzx  my-new-label-1    38.143.68.93    MIA1   CentOS 6.8 x86          running
-xzosdqyydeyutr  my-new-label-2    38.143.68.43    LON1   Ubuntu 20.04 x64        running
-cqwdciprplqmkk  my-new-label-3    38.143.68.53    MIA2   CentOS 6.8 x86          running
-xiflugipmecvfo  my-new-label-4    38.143.68.29    SFO1   Ubuntu 20.04 x64        running
+letscloud instance list
 ```
 
-### Create a New SSH Key
-
-If you do not provide a public key, we will generate a new key and the private key will be shown. **Save this key as it is not stored**
+### Create new instance
 ```
-$  letscloud ssh-key create --title=my-ssh-key
-   SSH Key my-ssh-key successfully created!
-   Here's your private key, please store it in a safe place
-   -----BEGIN RSA PRIVATE KEY-----
-   MIICWwIBAAKBgQDHPpb9xt+3X7FrvpzeZ7qyNXFz6Q0uGU7pKEahW4SfkQjV6dQ2
-   ................................................................
-   -----END RSA PRIVATE KEY-----
+letscloud instance create --location <location-slug> --plan <plan-slug> --image <image-slug> --hostname <host-name> --label <label> --password <password>
 ```
+**The password must:**
+- Be between 12 and 32 characters.
+- Contain at least one uppercase letter.
+- Contain at least one lowercase letter.
+- Contain at least one digit.
+- Contain at least one special character.
 
-### Get Help
-
-You can get all the available commands using
-
-```shell script
-letscloud help
-NAME:
-   Official LetsCloud CLI - This cli helps you to manage your LetsCloud infrastructure from your terminal
-
-USAGE:
-   letscloud [global options] command [command options] [arguments...]
-
-VERSION:
-   v1.0.0
-
-COMMANDS:
-   api-key    Show or Set your API Key
-   locations  Show All Locations
-   plans      Show All Plans by Location
-   images     Show All the Images by Location
-   ssh-key    Manage your SSH Keys
-   snapshot   Manage your snapshots
-   instance   Manage your instances
-   profile    Show your Profile Info
-   help, h    Shows a list of commands or help for one command
-
-GLOBAL OPTIONS:
-   --help, -h     show help (default: false)
-   --version, -v  print the version (default: false)
+Example:
+```
+letscloud instance create --location MIA1 --plan 1vcpu-1gb-10ssd --image ubuntu-24.04-x86_64 --hostname test-hostname.com --label test-cli --password exampleExample@123
 ```
 
-You can get help for any command using
+or you can create an instance using your SSH key:
+```
+letscloud ssh-key list
+```
+```
+letscloud instance create --location MIA1 --plan 1vcpu-1gb-10ssd --image ubuntu-24.04-x86_64 --hostname test-hostname.com --label test-cli-key --ssh <ssh-slug>
+```
 
-```shell script
-letscloud ssh-key help
-NAME:
-   Official LetsCloud CLI ssh-key - Manage your SSH Keys
+### List all available locations
+```
+letscloud locations
+```
 
-USAGE:
-   Official LetsCloud CLI ssh-key [global options] command [command options] [arguments...]
+### List all available images by location
+```
+letscloud images <location-slug>
+```
 
-COMMANDS:
-   list
-   create
-   delete
-   help, h  Shows a list of commands or help for one command
-
-GLOBAL OPTIONS:
-   --help, -h  show help (default: false)
-
-GLOBAL OPTIONS:
-   --help, -h     show help (default: false)
-   --version, -v  print the version (default: false)
+### List all available plans by location
+```
+letscloud plans <location-slug>
 ```
 
 ## License

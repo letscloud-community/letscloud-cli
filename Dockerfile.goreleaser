@@ -1,0 +1,13 @@
+FROM alpine:3.8
+
+RUN apk add --update \
+        bash \
+        curl \
+        rsync \
+        libc6-compat \
+        openssh \
+        ca-certificates
+
+COPY letscloud /usr/local/bin/letscloud
+
+ENTRYPOINT ["letscloud"]
