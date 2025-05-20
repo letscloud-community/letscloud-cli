@@ -20,9 +20,10 @@ func main() {
 
 	// Create new CLI App
 	app := cli.NewApp()
-	app.Name = "Official LetsCloud CLI"
 	app.Version = VERSION
-	app.Usage = "This cli helps you to manage your LetsCloud infrastructure from your terminal"
+	app.Name = "letscloud"
+	app.Usage = "manage your LetsCloud resources from your terminal"
+	app.UsageText = "letscloud [command]"
 	app.Commands = cmdDict.Commands()
 	app.Before = func(ctx *cli.Context) error {
 		if ctx.Args().Len() > 1 {
