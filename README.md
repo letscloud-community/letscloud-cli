@@ -161,7 +161,13 @@ letscloud instance list
 
 ### Create new instance
 ```
-letscloud instance create --location <location-slug> --plan <plan-slug> --image <image-slug> --hostname <host-name> --label <label> --password <password>
+letscloud instance create \
+   --location <location-slug> \
+   --plan <plan-slug> \
+   --image <image-slug> \
+   --hostname <host-name> \
+   --label <label> \
+   --password <password>
 ```
 **The password must:**
 - Be between 12 and 32 characters.
@@ -172,6 +178,17 @@ letscloud instance create --location <location-slug> --plan <plan-slug> --image 
 
 Example:
 ```
+letscloud instance create \
+   --location MIA1 \
+   --plan 1vcpu-1gb-10ssd \
+   --image ubuntu-24.04-x86_64 \
+   --hostname test-hostname.com \
+   --label test-cli \
+   --password exampleExample@123
+```
+
+Example one-line:
+```
 letscloud instance create --location MIA1 --plan 1vcpu-1gb-10ssd --image ubuntu-24.04-x86_64 --hostname test-hostname.com --label test-cli --password exampleExample@123
 ```
 
@@ -180,7 +197,13 @@ or you can create an instance using your SSH key:
 letscloud ssh-key list
 ```
 ```
-letscloud instance create --location MIA1 --plan 1vcpu-1gb-10ssd --image ubuntu-24.04-x86_64 --hostname test-hostname.com --label test-cli-key --ssh <ssh-slug>
+letscloud instance create \
+   --location MIA1 \
+   --plan 1vcpu-1gb-10ssd \
+   --image ubuntu-24.04-x86_64 \
+   --hostname test-hostname.com \
+   --label test-cli-key \
+   --ssh <ssh-slug>
 ```
 
 ### List all available locations
